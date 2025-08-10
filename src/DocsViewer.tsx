@@ -16,11 +16,18 @@ export default function DocsViewer() {
   const [content, setContent] = useState('')
 
   const loadFile = async (file: typeof docsList[0]) => {
-    setCurrent(file)
-    const basePath = import.meta.env.DEV ? '' : import.meta.env.VITE_BASE_URL
-    const res = await fetch(`${basePath}${file.path}`)
-    const text = await res.text()
+    try{
+        setCurrent(file)
+        const basePath =  window.location.origin
+        const res = await fetch(`${basePath}${file.path}`)
+        if (!res.ok) {
+        throw new Error(`Failed to load file: ${res.statusText}`)
+        }
+        const text = await res.text()
     setContent(text)
+    } catch (error) {
+      console.error('Error loading file:', error)
+    }
   }
 
 
